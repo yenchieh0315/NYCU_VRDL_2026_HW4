@@ -36,4 +36,3 @@ python inference_FT_v2.py
 
 ## Performance Snapshot
 ![Leaderboard](CodeBench_competition.png)
-```
