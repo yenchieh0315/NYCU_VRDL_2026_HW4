@@ -4,33 +4,34 @@
 - Name: 郭彥頡, Yenchieh Kuo
 
 ## Introduction
-This project implements an image classification model using Deep Learning. 
-I utilized multiple ResNet models like **ResNet34, RseNet50, ResNet101 and ResNet152** as the backbone and applied Transfer Learning with ImageNet pre-trained weights.
-To improve the performance and avoid overfitting, 3 learning rate setting were implement, warm-up -> Hold -> Decay, respectivily.
+The objective of this assignment is to train a single model from scratch capable of restoring images degraded by two different conditions: rain and snow. The core challenge lies in the "All-in-One" nature of the task and the hardware constraint of training from scratch on an 8GB VRAM GPU (RTX 4060).
+
+To tackle this, the method builds upon the fundamental design of **PromptIR** [1], which utilizes a Prompt Generation Module (PGM) to implicitly deduce the degradation type (rain or snow) and a Prompt Interaction Module (PIM) to guide the restoration dynamically. However, since the original Transformer-based Restormer blocks in PromptIR consume excessive memory, I designed a **CNN-Transformer Hybrid Architecture**. By integrating memory-efficient **NAFBlocks** [2] with Transformer bottlenecks, alongside Progressive Fine-tuning, CutBlur augmentation, and specialized loss functions, the model successfully achieved a highly competitive PSNR of **28.14** dB under strict hardware constraints.
 
 ## Environment Setup
 It is recommended to use Miniconda to set up the environment. You can easily recreate the environment using the provided ".yml" file:
 
 ```bash
-# Create the environment from the environment.yml file
-conda env create -f VRDL_HW1_env.yml
-
-# Activate the new environment
-conda activate VRDL_HW1_env
+conda env create -f vrdl_hw4.yml
+conda activate vrdl_hw4
 ```
 
 ## Usage
 ### Training
-How to train your model.
+How to train your model. The following three .py should be execute sequentially.
+
+Make sure your .pth file is on the right direction.
 ```bash
-python VRDL_HW1_ResNet152.py
+python train.py
+python train_FT_v1.py
+python train_FT_v2.py
 ```
-If you want to use other ResNet model, choose other .py file you want.
 ### Inference
-How to run inference.
+How to run inference. Same as training, you need to execute them sequentially.
 ```bash
-#Make sure the dataset is in ./data/test
-python VRDL_HW1_ResNet101.py --mode test --weights ./best_model_resnet101.pth --data_dir ./data/test
+python inference.py
+python inference_FT_v1.py
+python inference_FT_v2.py
 ```
 
 ## Performance Snapshot
